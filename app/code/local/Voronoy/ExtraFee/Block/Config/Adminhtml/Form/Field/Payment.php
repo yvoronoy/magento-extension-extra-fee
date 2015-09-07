@@ -39,7 +39,7 @@ class Voronoy_ExtraFee_Block_Config_Adminhtml_Form_Field_Payment extends Mage_Co
 
     public function getActivPaymentMethods()
     {
-        $payments = Mage::getSingleton('payment/config')->getActiveMethods();
+        $payments = Mage::getSingleton('payment/config')->getAllMethods();
 
         $methods = array(array('value'=>'', 'label'=>Mage::helper('adminhtml')->__('--Please Select--')));
 
