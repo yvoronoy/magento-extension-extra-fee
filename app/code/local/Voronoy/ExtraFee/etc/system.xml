@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento Extra Fee Extension
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @copyright Copyright (c) 2015 by Yaroslav Voronoy (y.voronoy@gmail.com)
+ * @license   http://www.gnu.org/licenses/
+ */
+ -->
+<config>
+    <sections>
+        <extra_fee_settings translate="label" module="sales">
+            <label>Extra Fee Settings</label>
+            <tab>sales</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>304</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <extra_fee_payment translate="label">
+                    <label>Payments Extra Fee</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>5</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <payment_methods translate="label comment">
+                            <label>Payment Methods</label>
+                            <comment>This section allows to add extra fee for payments</comment>
+                            <frontend_model>voronoy_extrafee/frontend_model_extra_fee_payment</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </payment_methods>
+                    </fields>
+                </extra_fee_payment>
+            </groups>
+        </extra_fee_settings>
+    </sections>
+</config>

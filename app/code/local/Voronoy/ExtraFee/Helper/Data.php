@@ -21,6 +21,8 @@
 
 class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
 {
+    const XML_PATH_EXTRA_FEE_PAYMENT_SETTINGS = 'extra_fee_settings/extra_fee_payment/payment_methods';
+
     /**
      * Fixed Extra Fee Method
      */
@@ -41,9 +43,24 @@ class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getPaymentMethodsWithExtraFee()
     {
-        return array(
-            'ccsave'  => 10,
-            'checkmo' => 3.5,
-        );
+        $payments = $this->_getPaymentsFromConfig();
+        $result = array();
+        foreach ($payments as $payment) {
+            $result[$payment['payment_code']] = $payment['amount'];
+        }
+        return $result;
+    }
+
+    public function _getPaymentsFromConfig()
+    {
+        $shippingCosts = Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_PAYMENT_SETTINGS);
+        if ($shippingCosts) {
+            $shippingCosts = unserialize($shippingCosts);
+            if (is_array($shippingCosts)) {
+                return $shippingCosts;
+            } else {
+                return array();
+            }
+        }
     }
 }
