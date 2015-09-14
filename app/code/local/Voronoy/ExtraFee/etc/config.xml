@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Voronoy_ExtraFee>
-            <version>0.1.1</version>
+            <version>1.0.2</version>
         </Voronoy_ExtraFee>
     </modules>
     <global>
@@ -54,17 +54,28 @@
                         <after>subtotal</after>
                         <before>grand_total</before>
                     </extra_fee_payment>
+                    <extra_fee_rule>
+                        <class>voronoy_extrafee/quote_address_total_fee_rule</class>
+                        <after>discount</after>
+                        <before>grand_total</before>
+                    </extra_fee_rule>
                 </totals>
             </quote>
         </sales>
         <fieldsets>
             <sales_convert_quote_address>
-                <base_payment_extra_fee_amount>
+                <base_extra_fee_payment_amount>
                     <to_order>*</to_order>
-                </base_payment_extra_fee_amount>
-                <payment_extra_fee_amount>
+                </base_extra_fee_payment_amount>
+                <extra_fee_payment_amount>
                     <to_order>*</to_order>
-                </payment_extra_fee_amount>
+                </extra_fee_payment_amount>
+                <base_extra_fee_rule_amount>
+                    <to_order>*</to_order>
+                </base_extra_fee_rule_amount>
+                <extra_fee_rule_amount>
+                    <to_order>*</to_order>
+                </extra_fee_rule_amount>
             </sales_convert_quote_address>
         </fieldsets>
         <resources>
@@ -75,6 +86,24 @@
                 </setup>
             </voronoy_extrafee_setup>
         </resources>
+        <events>
+            <salesrule_rule_save_before>
+                <observers>
+                    <voronoy_extrafee>
+                        <class>voronoy_extrafee/observer</class>
+                        <method>beforeSaveSalesRuleModel</method>
+                    </voronoy_extrafee>
+                </observers>
+            </salesrule_rule_save_before>
+            <adminhtml_block_salesrule_actions_prepareform>
+                <observers>
+                    <voronoy_extrafee>
+                        <class>voronoy_extrafee/observer</class>
+                        <method>prepareFormSalesRuleEdit</method>
+                    </voronoy_extrafee>
+                </observers>
+            </adminhtml_block_salesrule_actions_prepareform>
+        </events>
     </global>
     <default>
         <extra_fee_settings>

@@ -1,0 +1,158 @@
+<?php
+/**
+ * Magento Extra Fee Extension
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @copyright Copyright (c) 2015 by Yaroslav Voronoy (y.voronoy@gmail.com)
+ * @license   http://www.gnu.org/licenses/
+ */
+
+class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Validator
+{
+    /**
+     * Quote item Extra Fee calculation process
+     *
+     * @param   Mage_Sales_Model_Quote_Item_Abstract $item
+     * @return  Mage_SalesRule_Model_Validator
+     */
+    public function process(Mage_Sales_Model_Quote_Item_Abstract $item)
+    {
+        $item->setExtraFeeRuleAmount(0);
+        $item->setBaseExtraFeeRuleAmount(0);
+        $item->setExtraFeeRulePercent(0);
+
+        $quote         = $item->getQuote();
+        $address       = $this->_getAddress($item);
+        $itemPrice     = $this->_getItemPrice($item);
+        $baseItemPrice = $this->_getItemBasePrice($item);
+        if ($itemPrice < 0) {
+            return $this;
+        }
+
+        $appliedRuleIds = array();
+        $this->_stopFurtherRules = false;
+        foreach ($this->_getRules() as $rule) {
+            if (!$this->_isRuleApplicableForItem($rule, $item)) {
+                continue;
+            }
+            $qty                = $this->_getItemQty($item, $rule);
+            $extraFeeAmount     = 0;
+            $baseExtraFeeAmount = 0;
+
+            switch ($rule->getSimpleAction()) {
+                case Mage_SalesRule_Model_Rule::BY_PERCENT_ACTION:
+                    $extraFeePercent = min(100, $rule->getExtraFeeAmount());
+                    $step = $rule->getDiscountStep();
+                    if ($step) {
+                        $qty = floor($qty/$step)*$step;
+                    }
+                    $_rulePct = $extraFeePercent/100;
+                    $extraFeeAmount    = ($qty * $itemPrice - $item->getExtraFeeRuleAmount()) * $_rulePct;
+                    $baseExtraFeeAmount = ($qty * $baseItemPrice - $item->getBaseExtraFeeRuleAmount()) * $_rulePct;
+
+                    if (!$rule->getDiscountQty() || $rule->getDiscountQty()>$qty) {
+                        $extraFeePercent = min(100, $item->getExtraFeeRulePercent()+$extraFeePercent);
+                        $item->setExtraFeeRulePercent($extraFeePercent);
+                    }
+                    break;
+
+                case Mage_SalesRule_Model_Rule::BY_FIXED_ACTION:
+                    $step = $rule->getDiscountStep();
+                    if ($step) {
+                        $qty = floor($qty/$step)*$step;
+                    }
+                    $quoteAmount        = $quote->getStore()->convertPrice($rule->getExtraFeeAmount());
+                    $extraFeeAmount     = $qty * $quoteAmount;
+                    $baseExtraFeeAmount = $qty * $rule->getExtraFeeAmount();
+                    break;
+            }
+
+            $percentKey = $item->getExtraFeeRulePercent();
+            /**
+             * Process "delta" rounding
+             */
+            if ($percentKey) {
+                $delta      = isset($this->_roundingDeltas[$percentKey]) ? $this->_roundingDeltas[$percentKey] : 0;
+                $baseDelta  = isset($this->_baseRoundingDeltas[$percentKey])
+                    ? $this->_baseRoundingDeltas[$percentKey]
+                    : 0;
+                $extraFeeAmount += $delta;
+                $baseExtraFeeAmount += $baseDelta;
+
+                $this->_roundingDeltas[$percentKey]     = $extraFeeAmount -
+                    $quote->getStore()->roundPrice($extraFeeAmount);
+                $this->_baseRoundingDeltas[$percentKey] = $baseExtraFeeAmount -
+                    $quote->getStore()->roundPrice($baseExtraFeeAmount);
+                $extraFeeAmount = $quote->getStore()->roundPrice($extraFeeAmount);
+                $baseExtraFeeAmount = $quote->getStore()->roundPrice($baseExtraFeeAmount);
+            } else {
+                $extraFeeAmount     = $quote->getStore()->roundPrice($extraFeeAmount);
+                $baseExtraFeeAmount = $quote->getStore()->roundPrice($baseExtraFeeAmount);
+            }
+
+            /**
+             * We can't use row total here because row total not include tax
+             * Discount can be applied on price included tax
+             */
+
+            $itemExtraFeeRuleAmount = $item->getExtraFeeRuleAmount();
+            $itemBaseExtraFeeRuleAmount = $item->getBaseExtraFeeRuleAmount();
+
+            $extraFeeAmount     = min($itemExtraFeeRuleAmount + $extraFeeAmount, $itemPrice * $qty);
+            $baseExtraFeeAmount = min($itemBaseExtraFeeRuleAmount + $baseExtraFeeAmount, $baseItemPrice * $qty);
+
+            $item->setExtraFeeRuleAmount($extraFeeAmount);
+            $item->setBaseExtraFeeRuleAmount($baseExtraFeeAmount);
+
+            $appliedRuleIds[$rule->getRuleId()] = $rule->getRuleId();
+
+            $this->_maintainAddressCouponCode($address, $rule);
+            $this->_addDiscountDescription($address, $rule);
+
+            if ($rule->getStopRulesProcessing()) {
+                $this->_stopFurtherRules = true;
+                break;
+            }
+        }
+
+        $item->setAppliedRuleIds(join(',',$appliedRuleIds));
+        $address->setAppliedRuleIds($this->mergeIds($address->getAppliedRuleIds(), $appliedRuleIds));
+        $quote->setAppliedRuleIds($this->mergeIds($quote->getAppliedRuleIds(), $appliedRuleIds));
+
+        return $this;
+    }
+
+    /**
+     * Validate Rule
+     *
+     * @param $item
+     *
+     * @return bool
+     */
+    protected function _isRuleApplicableForItem($rule, $item)
+    {
+        $address = $this->_getAddress($item);
+        /* @var $rule Mage_SalesRule_Model_Rule */
+        if (!$this->_canProcessRule($rule, $address)) {
+            return false;
+        }
+
+        if (!$rule->getActions()->validate($item)) {
+            return false;
+        }
+
+        return true;
+    }
+}
