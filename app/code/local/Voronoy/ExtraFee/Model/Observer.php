@@ -28,6 +28,10 @@ class Voronoy_ExtraFee_Model_Observer
      */
     public function beforeSaveSalesRuleModel($observer)
     {
+        if (!Mage::helper('voronoy_extrafee')->isRuleExtraFeeEnabled()) {
+            return $this;
+        }
+
         if (Mage::app()->getRequest()->isPost()) {
             $postData = Mage::app()->getRequest()->getPost();
             if (isset($postData['extra_fee_amount'])) {
@@ -44,6 +48,10 @@ class Voronoy_ExtraFee_Model_Observer
      */
     public function prepareFormSalesRuleEdit($observer)
     {
+        if (!Mage::helper('voronoy_extrafee')->isRuleExtraFeeEnabled()) {
+            return $this;
+        }
+
         $model = Mage::registry('current_promo_quote_rule');
         if (!$model) {
             return $this;

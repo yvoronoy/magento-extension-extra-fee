@@ -28,6 +28,9 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Payment extends Mage_Sales_
      */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
+        if (!Mage::helper('voronoy_extrafee')->isPaymentExtraFeeEnabled()) {
+            return $this;
+        }
         parent::collect($address);
         $address->setExtraFeePaymentAmount(0);
         $address->setBaseExtraFeePaymentAmount(0);
@@ -59,6 +62,9 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Payment extends Mage_Sales_
      */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
+        if (!Mage::helper('voronoy_extrafee')->isPaymentExtraFeeEnabled()) {
+            return $this;
+        }
         $amount = $address->getExtraFeePaymentAmount();
         if ($amount > 0) {
             $address->addTotal(array(

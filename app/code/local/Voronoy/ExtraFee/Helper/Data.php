@@ -21,7 +21,12 @@
 
 class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
 {
-    const XML_PATH_EXTRA_FEE_PAYMENT_SETTINGS = 'extra_fee_settings/extra_fee_payment/payment_methods';
+    const XML_PATH_EXTRA_FEE_PAYMENT_ACTIVE           = 'extra_fee_settings/extra_fee_payment/active';
+    const XML_PATH_EXTRA_FEE_PAYMENT_LABEL            = 'extra_fee_settings/extra_fee_payment/label';
+    const XML_PATH_EXTRA_FEE_PAYMENT_METHODS          = 'extra_fee_settings/extra_fee_payment/payment_methods';
+
+    const XML_PATH_EXTRA_FEE_RULE_ACTIVE              = 'extra_fee_settings/extra_fee_rule/active';
+    const XML_PATH_EXTRA_FEE_RULE_LABEL               = 'extra_fee_settings/extra_fee_rule/label';
 
     /**
      * Fixed Extra Fee Method
@@ -51,9 +56,14 @@ class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
         return $result;
     }
 
-    public function _getPaymentsFromConfig()
+    /**
+     * Get Payments From Config
+     *
+     * @return array
+     */
+    protected function _getPaymentsFromConfig()
     {
-        $shippingCosts = Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_PAYMENT_SETTINGS);
+        $shippingCosts = Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_PAYMENT_METHODS);
         if ($shippingCosts) {
             $shippingCosts = unserialize($shippingCosts);
             if (is_array($shippingCosts)) {
@@ -64,13 +74,45 @@ class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
         }
     }
 
-    public function getExtraFeeRuleLabel()
+    /**
+     * Check If Payment Extra Fee Enabled
+     *
+     * @return bool
+     */
+    public function isPaymentExtraFeeEnabled()
     {
-        return "Extra Fee Rule";
+        $result = (bool) Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_PAYMENT_ACTIVE);
+        return $result;
     }
 
+    /**
+     * Check If Payment Extra Fee Enabled
+     *
+     * @return bool
+     */
+    public function isRuleExtraFeeEnabled()
+    {
+        $result = (bool) Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_RULE_ACTIVE);
+        return $result;
+    }
+
+    /**
+     * Get Extra Fee for Shopping Cart Rule
+     *
+     * @return string
+     */
+    public function getExtraFeeRuleLabel()
+    {
+        return (string) Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_RULE_LABEL);
+    }
+
+    /**
+     * Get Extra Payment Fee Label
+     *
+     * @return string
+     */
     public function getExtraFeePaymentLabel()
     {
-        return "Payment Extra Fee";
+        return (string) Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_PAYMENT_LABEL);
     }
 }

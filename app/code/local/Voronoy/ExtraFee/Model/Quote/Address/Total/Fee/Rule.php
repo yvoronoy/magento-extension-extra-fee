@@ -43,6 +43,9 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
      */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
+        if (!Mage::helper('voronoy_extrafee')->isRuleExtraFeeEnabled()) {
+            return $this;
+        }
         parent::collect($address);
         $quote = $address->getQuote();
         $store = Mage::app()->getStore($quote->getStoreId());
@@ -76,6 +79,9 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
      */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
+        if (!Mage::helper('voronoy_extrafee')->isRuleExtraFeeEnabled()) {
+            return $this;
+        }
         $amount = $address->getExtraFeeRuleAmount();
 
         if ($amount > 0) {

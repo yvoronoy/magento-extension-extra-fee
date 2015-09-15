@@ -30,6 +30,9 @@ class Voronoy_ExtraFee_Model_Sales_Order_Invoice_Total_Fee_Payment extends Mage_
      */
     public function collect(Mage_Sales_Model_Order_Invoice $invoice)
     {
+        if (!Mage::helper('voronoy_extrafee')->isPaymentExtraFeeEnabled()) {
+            return $this;
+        }
         $invoice->setExtraFeePaymentAmount(0);
         $invoice->setBaseExtraFeePaymentAmount(0);
         if ($this->_isAmountInvoiced($invoice)) {

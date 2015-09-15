@@ -141,8 +141,14 @@
     <default>
         <extra_fee_settings>
             <extra_fee_payment>
+                <active>1</active>
+                <label>Payment Extra Fee</label>
                 <payment_methods>a:1:{s:18:"_1441609947697_697";a:2:{s:12:"payment_code";s:0:"";s:6:"amount";s:0:"";}}</payment_methods>
             </extra_fee_payment>
+            <extra_fee_rule>
+                <active>1</active>
+                <label>Extra Fee</label>
+            </extra_fee_rule>
         </extra_fee_settings>
     </default>
 </config>
