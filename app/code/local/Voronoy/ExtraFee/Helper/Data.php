@@ -63,4 +63,14 @@ class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
             }
         }
     }
+
+    public function getExtraFeeRuleLabel()
+    {
+        return "Extra Fee Rule";
+    }
+
+    public function getExtraFeePaymentLabel()
+    {
+        return "Payment Extra Fee";
+    }
 }

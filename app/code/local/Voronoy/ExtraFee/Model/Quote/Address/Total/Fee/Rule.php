@@ -56,7 +56,6 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
         $this->_calculator->init($store->getWebsiteId(), $quote->getCustomerGroupId(), $quote->getCouponCode());
         $this->_calculator->initTotals($items, $address);
 
-        $address->setDiscountDescription(array());
         $items = $this->_calculator->sortItemsByPriority($items);
 
         foreach ($items as $item) {
@@ -65,6 +64,7 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
 
         $this->_addAmount($item->getExtraFeeRuleAmount());
         $this->_addBaseAmount($item->getBaseExtraFeeRuleAmount());
+        $this->_calculator->prepareDescription($address);
     }
 
     /**
@@ -77,11 +77,14 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         $amount = $address->getExtraFeeRuleAmount();
-        $address->addTotal(array(
-            'code'  => $this->getCode(),
-            'title' => Mage::helper('voronoy_extrafee')->__('Rule Extra Fee'),
-            'value' => $amount
-        ));
+
+        if ($amount > 0) {
+            $address->addTotal(array(
+                'code'  => $this->getCode(),
+                'title' => Mage::helper('voronoy_extrafee')->getExtraFeeRuleLabel(),
+                'value' => $amount
+            ));
+        }
         return $this;
     }
 }

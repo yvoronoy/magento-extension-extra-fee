@@ -60,11 +60,13 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Payment extends Mage_Sales_
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         $amount = $address->getExtraFeePaymentAmount();
-        $address->addTotal(array(
-            'code'  => $this->getCode(),
-            'title' => Mage::helper('voronoy_extrafee')->__('Payment Extra Fee'),
-            'value' => $amount
-        ));
+        if ($amount > 0) {
+            $address->addTotal(array(
+                'code'  => $this->getCode(),
+                'title' => Mage::helper('voronoy_extrafee')->getExtraFeePaymentLabel(),
+                'value' => $amount
+            ));
+        }
         return $this;
     }
 

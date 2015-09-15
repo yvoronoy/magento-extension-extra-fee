@@ -135,6 +135,56 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
     }
 
     /**
+     * Add rule discount description label to address object
+     *
+     * @param   Mage_Sales_Model_Quote_Address $address
+     * @param   Mage_SalesRule_Model_Rule $rule
+     * @return  Mage_SalesRule_Model_Validator
+     */
+    protected function _addDiscountDescription($address, $rule)
+    {
+        $description = $address->getExtraFeeRuleDescriptionArray();
+        $ruleLabel = $rule->getStoreLabel($address->getQuote()->getStore());
+        $label = '';
+        if ($ruleLabel) {
+            $label = $ruleLabel;
+        } else if (strlen($address->getCouponCode())) {
+            $label = $address->getCouponCode();
+        }
+
+        if (strlen($label)) {
+            $description[$rule->getId()] = $label;
+        }
+
+        $address->setExtraFeeRuleDescriptionArray($description);
+
+        return $this;
+    }
+
+    /**
+     * Convert address discount description array to string
+     *
+     * @param Mage_Sales_Model_Quote_Address $address
+     * @param string $separator
+     * @return Mage_SalesRule_Model_Validator
+     */
+    public function prepareDescription($address, $separator = ', ')
+    {
+        $descriptionArray = $address->getExtraFeeRuleDescriptionArray();
+        /** @see Mage_SalesRule_Model_Validator::_getAddress */
+        if (!$descriptionArray && $address->getQuote()->getItemVirtualQty() > 0) {
+            $descriptionArray = $address->getQuote()->getBillingAddress()->getExtraFeeRuleDescriptionArray();
+        }
+
+        $description = $descriptionArray && is_array($descriptionArray)
+            ? implode($separator, array_unique($descriptionArray))
+            :  '';
+
+        $address->setExtraFeeRuleDescription($description);
+        return $this;
+    }
+
+    /**
      * Validate Rule
      *
      * @param $item

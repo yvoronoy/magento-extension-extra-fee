@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+    <voronoy_extrafee_payment_add_order_total>
+        <reference name="order_totals">
+            <block type="voronoy_extrafee/sales_order_totals_payment" name="voronoy_extrafee_payment_totals" />
+        </reference>
+    </voronoy_extrafee_payment_add_order_total>
+    <voronoy_extrafee_rule_add_order_total>
+        <reference name="order_totals">
+            <block type="voronoy_extrafee/sales_order_totals_rule" name="voronoy_extrafee_rule_totals" />
+        </reference>
+    </voronoy_extrafee_rule_add_order_total>
+
+    <voronoy_extrafee_payment_add_invoice_total>
+        <reference name="invoice_totals">
+            <block type="voronoy_extrafee/sales_order_totals_payment" name="voronoy_extrafee_payment_totals" />
+        </reference>
+    </voronoy_extrafee_payment_add_invoice_total>
+    <voronoy_extrafee_rule_add_invoice_total>
+        <reference name="invoice_totals">
+            <block type="voronoy_extrafee/sales_order_totals_rule" name="voronoy_extrafee_rule_totals" />
+        </reference>
+    </voronoy_extrafee_rule_add_invoice_total>
+
+    <sales_order_view>
+        <update handle="voronoy_extrafee_rule_add_order_total" />
+        <update handle="voronoy_extrafee_payment_add_order_total" />
+    </sales_order_view>
+    <sales_order_print>
+        <update handle="voronoy_extrafee_rule_add_order_total" />
+        <update handle="voronoy_extrafee_payment_add_order_total" />
+    </sales_order_print>
+    <sales_email_order_items>
+        <update handle="voronoy_extrafee_rule_add_order_total" />
+        <update handle="voronoy_extrafee_payment_add_order_total" />
+    </sales_email_order_items>
+    <sales_guest_view>
+        <update handle="voronoy_extrafee_rule_add_order_total" />
+        <update handle="voronoy_extrafee_payment_add_order_total" />
+    </sales_guest_view>
+    <sales_guest_print>
+        <update handle="voronoy_extrafee_rule_add_order_total" />
+        <update handle="voronoy_extrafee_payment_add_order_total" />
+    </sales_guest_print>
+
+    <sales_order_invoice>
+        <update handle="voronoy_extrafee_payment_add_invoice_total" />
+        <update handle="voronoy_extrafee_rule_add_invoice_total" />
+    </sales_order_invoice>
+    <sales_order_printinvoice>
+        <update handle="voronoy_extrafee_payment_add_invoice_total" />
+        <update handle="voronoy_extrafee_rule_add_invoice_total" />
+    </sales_order_printinvoice>
+    <sales_email_order_invoice_items>
+        <update handle="voronoy_extrafee_payment_add_invoice_total" />
+        <update handle="voronoy_extrafee_rule_add_invoice_total" />
+    </sales_email_order_invoice_items>
+    <sales_guest_invoice>
+        <update handle="voronoy_extrafee_payment_add_invoice_total" />
+        <update handle="voronoy_extrafee_rule_add_invoice_total" />
+    </sales_guest_invoice>
+    <sales_guest_printinvoice>
+        <update handle="voronoy_extrafee_payment_add_invoice_total" />
+        <update handle="voronoy_extrafee_rule_add_invoice_total" />
+    </sales_guest_printinvoice>
+</layout>
