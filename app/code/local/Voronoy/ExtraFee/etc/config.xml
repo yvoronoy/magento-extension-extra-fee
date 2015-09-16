@@ -35,6 +35,11 @@
             <voronoy_extrafee_resource>
                 <class>Voronoy_ExtraFee_Model_Resource</class>
             </voronoy_extrafee_resource>
+            <salesrule>
+                <rewrite>
+                    <validator>Voronoy_ExtraFee_Model_SalesRule_Discount_Validator</validator>
+                </rewrite>
+            </salesrule>
         </models>
         <blocks>
             <voronoy_extrafee>
