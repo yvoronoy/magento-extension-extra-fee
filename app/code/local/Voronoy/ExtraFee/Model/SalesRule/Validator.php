@@ -205,4 +205,20 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
 
         return true;
     }
+
+    /**
+     * Check if we can process rule
+     *
+     * @param Mage_SalesRule_Model_Rule $rule
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return bool
+     */
+    protected function _canProcessRule($rule, $address)
+    {
+        if ($rule->getExtraFeeAmount() == 0) {
+            return false;
+        }
+        return parent::_canProcessRule($rule, $address);
+    }
 }

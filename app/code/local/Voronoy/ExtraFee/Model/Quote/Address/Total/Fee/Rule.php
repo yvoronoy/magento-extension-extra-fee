@@ -83,11 +83,17 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
             return $this;
         }
         $amount = $address->getExtraFeeRuleAmount();
+        if ($address->getExtraFeeRuleDescription()) {
+            $discountLabel = Mage::helper('voronoy_extrafee')->__('%s (%s)',
+                Mage::helper('voronoy_extrafee')->getExtraFeeRuleLabel(), $address->getExtraFeeRuleDescription());
+        } else {
+            $discountLabel = Mage::helper('voronoy_extrafee')->getExtraFeeRuleLabel();
+        }
 
         if ($amount > 0) {
             $address->addTotal(array(
                 'code'  => $this->getCode(),
-                'title' => Mage::helper('voronoy_extrafee')->getExtraFeeRuleLabel(),
+                'title' => $discountLabel,
                 'value' => $amount
             ));
         }
