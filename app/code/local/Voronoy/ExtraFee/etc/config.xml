@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Voronoy_ExtraFee>
-            <version>1.0.4</version>
+            <version>1.0.5</version>
         </Voronoy_ExtraFee>
     </modules>
     <global>
@@ -79,6 +79,25 @@
                 </totals>
             </order_invoice>
         </sales>
+        <pdf>
+            <totals>
+                <extra_fee_payment>
+                    <title>Payment Fee</title>
+                    <source_field>extra_fee_payment_amount</source_field>
+                    <font_size>7</font_size>
+                    <display_zero>0</display_zero>
+                    <sort_order>300</sort_order>
+                </extra_fee_payment>
+                <extra_fee_rule>
+                    <title>Extra Rule Fee</title>
+                    <source_field>extra_fee_rule_amount</source_field>
+                    <title_source_field>extra_fee_rule_description</title_source_field>
+                    <font_size>7</font_size>
+                    <display_zero>0</display_zero>
+                    <sort_order>300</sort_order>
+                </extra_fee_rule>
+            </totals>
+        </pdf>
         <fieldsets>
             <sales_convert_quote_address>
                 <base_extra_fee_payment_amount>
@@ -97,6 +116,11 @@
                     <to_order>*</to_order>
                 </extra_fee_rule_description>
             </sales_convert_quote_address>
+            <sales_convert_order>
+                <extra_fee_rule_description>
+                    <to_invoice>*</to_invoice>
+                </extra_fee_rule_description>
+            </sales_convert_order>
         </fieldsets>
         <resources>
             <voronoy_extrafee_setup>
