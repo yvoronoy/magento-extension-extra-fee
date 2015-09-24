@@ -77,6 +77,50 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
                     $extraFeeAmount     = $qty * $quoteAmount;
                     $baseExtraFeeAmount = $qty * $rule->getExtraFeeAmount();
                     break;
+                case Mage_SalesRule_Model_Rule::CART_FIXED_ACTION:
+                    if (empty($this->_rulesItemTotals[$rule->getId()])) {
+                        Mage::throwException(Mage::helper('salesrule')->__('Item totals are not set for rule.'));
+                    }
+
+                    /**
+                     * prevent applying whole cart discount for every shipping order, but only for first order
+                     */
+                    if ($quote->getIsMultiShipping()) {
+                        $usedForAddressId = $this->getCartFixedRuleUsedForAddress($rule->getId());
+                        if ($usedForAddressId && $usedForAddressId != $address->getId()) {
+                            break;
+                        } else {
+                            $this->setCartFixedRuleUsedForAddress($rule->getId(), $address->getId());
+                        }
+                    }
+                    $cartRules = $address->getCartFixedRules();
+                    if (!isset($cartRules[$rule->getId()])) {
+                        $cartRules[$rule->getId()] = $rule->getExtraFeeAmount();
+                    }
+
+                    if ($cartRules[$rule->getId()] > 0) {
+                        if ($this->_rulesItemTotals[$rule->getId()]['items_count'] <= 1) {
+                            $quoteAmount = $quote->getStore()->convertPrice($cartRules[$rule->getId()]);
+                            $baseExtraFeeAmount= min($baseItemPrice * $qty, $cartRules[$rule->getId()]);
+                        } else {
+                            $discountRate = $baseItemPrice * $qty /
+                                $this->_rulesItemTotals[$rule->getId()]['base_items_price'];
+                            $maximumItemDiscount = $rule->getDiscountAmount() * $discountRate;
+                            $quoteAmount = $quote->getStore()->convertPrice($maximumItemDiscount);
+
+                            $baseExtraFeeAmount = min($baseItemPrice * $qty, $maximumItemDiscount);
+                            $this->_rulesItemTotals[$rule->getId()]['items_count']--;
+                        }
+
+                        $extraFeeAmount = min($itemPrice * $qty, $quoteAmount);
+                        $extraFeeAmount = $quote->getStore()->roundPrice($extraFeeAmount);
+                        $baseExtraFeeAmount = $quote->getStore()->roundPrice($baseExtraFeeAmount);
+
+                        $cartRules[$rule->getId()] += $baseExtraFeeAmount;
+                    }
+                    $address->setCartFixedRules($cartRules);
+
+                    break;
             }
 
             $percentKey = $item->getExtraFeeRulePercent();

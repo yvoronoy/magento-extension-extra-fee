@@ -60,13 +60,23 @@ class Voronoy_ExtraFee_Model_Quote_Address_Total_Fee_Rule extends Mage_Sales_Mod
         $this->_calculator->initTotals($items, $address);
 
         $items = $this->_calculator->sortItemsByPriority($items);
-
         foreach ($items as $item) {
-            $this->_calculator->process($item);
+            if ($item->getParentItemId()) {
+                continue;
+            }
+            if ($item->getHasChildren() && $item->isChildrenCalculated()) {
+                foreach ($item->getChildren() as $child) {
+                    $this->_calculator->process($child);
+                    $this->_addAmount($child->getExtraFeeRuleAmount());
+                    $this->_addBaseAmount($child->getBaseExtraFeeRuleAmount());
+                }
+            } else {
+                $this->_calculator->process($item);
+                $this->_addAmount($item->getExtraFeeRuleAmount());
+                $this->_addBaseAmount($item->getBaseExtraFeeRuleAmount());
+            }
         }
 
-        $this->_addAmount($item->getExtraFeeRuleAmount());
-        $this->_addBaseAmount($item->getBaseExtraFeeRuleAmount());
         $this->_calculator->prepareDescription($address);
     }
 

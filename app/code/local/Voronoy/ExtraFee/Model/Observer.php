@@ -70,7 +70,10 @@ class Voronoy_ExtraFee_Model_Observer
             ->setChild('form_after', Mage::app()->getLayout()->createBlock('adminhtml/widget_form_element_dependence')
             ->addFieldMap('rule_extra_fee_amount', 'extra_fee_amount')
             ->addFieldMap('rule_simple_action', 'simple_action')
-            ->addFieldDependence('extra_fee_amount', 'simple_action', array('by_percent', 'by_fixed'))
+            ->addFieldDependence('extra_fee_amount', 'simple_action', array(
+                Mage_SalesRule_Model_Rule::BY_PERCENT_ACTION,
+                Mage_SalesRule_Model_Rule::BY_FIXED_ACTION,
+                Mage_SalesRule_Model_Rule::CART_FIXED_ACTION))
         );
     }
 }
