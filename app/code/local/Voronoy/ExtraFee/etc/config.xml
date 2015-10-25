@@ -23,7 +23,7 @@
 <config>
     <modules>
         <Voronoy_ExtraFee>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
         </Voronoy_ExtraFee>
     </modules>
     <global>
@@ -54,11 +54,6 @@
         <sales>
             <quote>
                 <totals>
-                    <extra_fee_payment>
-                        <class>voronoy_extrafee/quote_address_total_fee_payment</class>
-                        <after>subtotal</after>
-                        <before>grand_total</before>
-                    </extra_fee_payment>
                     <extra_fee_rule>
                         <class>voronoy_extrafee/quote_address_total_fee_rule</class>
                         <after>discount</after>
@@ -68,10 +63,6 @@
             </quote>
             <order_invoice>
                 <totals>
-                    <extra_fee_payment>
-                        <class>voronoy_extrafee/sales_order_invoice_total_fee_payment</class>
-                        <after>subtotal</after>
-                    </extra_fee_payment>
                     <extra_fee_rule>
                         <class>voronoy_extrafee/sales_order_invoice_total_fee_rule</class>
                         <after>discount</after>
@@ -81,13 +72,6 @@
         </sales>
         <pdf>
             <totals>
-                <extra_fee_payment>
-                    <title>Payment Fee</title>
-                    <source_field>extra_fee_payment_amount</source_field>
-                    <font_size>7</font_size>
-                    <display_zero>0</display_zero>
-                    <sort_order>300</sort_order>
-                </extra_fee_payment>
                 <extra_fee_rule>
                     <title>Extra Rule Fee</title>
                     <source_field>extra_fee_rule_amount</source_field>
@@ -100,12 +84,6 @@
         </pdf>
         <fieldsets>
             <sales_convert_quote_address>
-                <base_extra_fee_payment_amount>
-                    <to_order>*</to_order>
-                </base_extra_fee_payment_amount>
-                <extra_fee_payment_amount>
-                    <to_order>*</to_order>
-                </extra_fee_payment_amount>
                 <base_extra_fee_rule_amount>
                     <to_order>*</to_order>
                 </base_extra_fee_rule_amount>
@@ -169,11 +147,6 @@
     </adminhtml>
     <default>
         <extra_fee_settings>
-            <extra_fee_payment>
-                <active>1</active>
-                <label>Payment Extra Fee</label>
-                <payment_methods>a:1:{s:18:"_1441609947697_697";a:2:{s:12:"payment_code";s:0:"";s:6:"amount";s:0:"";}}</payment_methods>
-            </extra_fee_payment>
             <extra_fee_rule>
                 <active>1</active>
                 <label>Extra Fee</label>

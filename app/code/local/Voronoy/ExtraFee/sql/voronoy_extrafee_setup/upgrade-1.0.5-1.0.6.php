@@ -19,29 +19,16 @@
  * @license   http://www.gnu.org/licenses/
  */
 
-class Voronoy_ExtraFee_Helper_Data extends Mage_Core_Helper_Abstract
-{
-    const XML_PATH_EXTRA_FEE_RULE_ACTIVE              = 'extra_fee_settings/extra_fee_rule/active';
-    const XML_PATH_EXTRA_FEE_RULE_LABEL               = 'extra_fee_settings/extra_fee_rule/label';
+/* @var Mage_Sales_Model_Resource_Setup $installer */
+$installer = $this;
+$tables = array(
+    $installer->getTable('sales/quote_address'),
+    $installer->getTable('sales/order'),
+    $installer->getTable('sales/invoice'),
+);
 
-    /**
-     * Check If Rule Extra Fee Enabled
-     *
-     * @return bool
-     */
-    public function isRuleExtraFeeEnabled()
-    {
-        $result = (bool) Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_RULE_ACTIVE);
-        return $result;
-    }
-
-    /**
-     * Get Extra Fee for Shopping Cart Rule
-     *
-     * @return string
-     */
-    public function getExtraFeeRuleLabel()
-    {
-        return (string) Mage::getStoreConfig(self::XML_PATH_EXTRA_FEE_RULE_LABEL);
-    }
+foreach ($tables as $table) {
+    $installer->getConnection()->dropColumn($table, 'base_extra_fee_payment_amount');
+    $installer->getConnection()->dropColumn($table, 'extra_fee_payment_amount');
 }
+
