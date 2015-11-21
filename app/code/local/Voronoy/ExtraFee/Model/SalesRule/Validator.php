@@ -101,7 +101,7 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
                     if ($cartRules[$rule->getId()] > 0) {
                         if ($this->_rulesItemTotals[$rule->getId()]['items_count'] <= 1) {
                             $quoteAmount = $quote->getStore()->convertPrice($cartRules[$rule->getId()]);
-                            $baseExtraFeeAmount= min($baseItemPrice * $qty, $cartRules[$rule->getId()]);
+                            $baseExtraFeeAmount= $cartRules[$rule->getId()];
                         } else {
                             $discountRate = $baseItemPrice * $qty /
                                 $this->_rulesItemTotals[$rule->getId()]['base_items_price'];
