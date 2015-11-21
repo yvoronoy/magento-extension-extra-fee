@@ -108,11 +108,11 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
                             $maximumItemDiscount = $rule->getExtraFeeAmount() * $discountRate;
                             $quoteAmount = $quote->getStore()->convertPrice($maximumItemDiscount);
 
-                            $baseExtraFeeAmount = min($baseItemPrice * $qty, $maximumItemDiscount);
+                            $baseExtraFeeAmount = $maximumItemDiscount;
                             $this->_rulesItemTotals[$rule->getId()]['items_count']--;
                         }
 
-                        $extraFeeAmount = min($itemPrice * $qty, $quoteAmount);
+                        $extraFeeAmount = $quoteAmount;
                         $extraFeeAmount = $quote->getStore()->roundPrice($extraFeeAmount);
                         $baseExtraFeeAmount = $quote->getStore()->roundPrice($baseExtraFeeAmount);
 
@@ -154,8 +154,8 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
             $itemExtraFeeRuleAmount = $item->getExtraFeeRuleAmount();
             $itemBaseExtraFeeRuleAmount = $item->getBaseExtraFeeRuleAmount();
 
-            $extraFeeAmount     = min($itemExtraFeeRuleAmount + $extraFeeAmount, $itemPrice * $qty);
-            $baseExtraFeeAmount = min($itemBaseExtraFeeRuleAmount + $baseExtraFeeAmount, $baseItemPrice * $qty);
+            $extraFeeAmount     = $itemExtraFeeRuleAmount + $extraFeeAmount;
+            $baseExtraFeeAmount = $itemBaseExtraFeeRuleAmount + $baseExtraFeeAmount;
 
             $item->setExtraFeeRuleAmount($extraFeeAmount);
             $item->setBaseExtraFeeRuleAmount($baseExtraFeeAmount);
