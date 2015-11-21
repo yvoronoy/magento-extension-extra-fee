@@ -105,7 +105,7 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
                         } else {
                             $discountRate = $baseItemPrice * $qty /
                                 $this->_rulesItemTotals[$rule->getId()]['base_items_price'];
-                            $maximumItemDiscount = $rule->getDiscountAmount() * $discountRate;
+                            $maximumItemDiscount = $rule->getExtraFeeAmount() * $discountRate;
                             $quoteAmount = $quote->getStore()->convertPrice($maximumItemDiscount);
 
                             $baseExtraFeeAmount = min($baseItemPrice * $qty, $maximumItemDiscount);
@@ -116,7 +116,7 @@ class Voronoy_ExtraFee_Model_SalesRule_Validator extends Mage_SalesRule_Model_Va
                         $extraFeeAmount = $quote->getStore()->roundPrice($extraFeeAmount);
                         $baseExtraFeeAmount = $quote->getStore()->roundPrice($baseExtraFeeAmount);
 
-                        $cartRules[$rule->getId()] += $baseExtraFeeAmount;
+                        $cartRules[$rule->getId()] -= $baseExtraFeeAmount;
                     }
                     $address->setCartFixedRules($cartRules);
 
