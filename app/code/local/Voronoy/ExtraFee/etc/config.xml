@@ -119,12 +119,20 @@
             </salesrule_rule_save_before>
             <adminhtml_block_salesrule_actions_prepareform>
                 <observers>
-                    <voronoy_extrafee>
+                    <voronoy_extrafee_prepare_form>
                         <class>voronoy_extrafee/observer</class>
                         <method>prepareFormSalesRuleEdit</method>
-                    </voronoy_extrafee>
+                    </voronoy_extrafee_prepare_form>
                 </observers>
             </adminhtml_block_salesrule_actions_prepareform>
+            <paypal_prepare_line_items>
+                <observers>
+                    <voronoy_extrafee_paypal_prepare>
+                        <class>voronoy_extrafee/observer</class>
+                        <method>paypalPrepareLineItems</method>
+                    </voronoy_extrafee_paypal_prepare>
+                </observers>
+            </paypal_prepare_line_items>
         </events>
     </global>
     <frontend>

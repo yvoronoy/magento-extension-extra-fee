@@ -25,6 +25,7 @@ class Voronoy_ExtraFee_Model_Observer
      * Process Sales Rule Model Before Save
      *
      * @param $observer
+     * @return $this
      */
     public function beforeSaveSalesRuleModel($observer)
     {
@@ -45,6 +46,7 @@ class Voronoy_ExtraFee_Model_Observer
      * Prepare Form for Sales Rule
      *
      * @param $observer
+     * @return $this
      */
     public function prepareFormSalesRuleEdit($observer)
     {
@@ -75,5 +77,21 @@ class Voronoy_ExtraFee_Model_Observer
                 Mage_SalesRule_Model_Rule::BY_FIXED_ACTION,
                 Mage_SalesRule_Model_Rule::CART_FIXED_ACTION))
         );
+    }
+
+    /**
+     * PayPal prepare request
+     *
+     * @param $observer
+     */
+    public function paypalPrepareLineItems($observer)
+    {
+
+        /* @var $cart Mage_Paypal_Model_Cart */
+        $cart = $observer->getEvent()->getPaypalCart();
+        $address = $cart->getSalesEntity()->getIsVirtual() ?
+            $cart->getSalesEntity()->getBillingAddress() : $cart->getSalesEntity()->getShippingAddress();
+        $feeAmount = $address->getExtraFeeRuleAmount();
+        $cart->updateTotal(Mage_Paypal_Model_Cart::TOTAL_TAX, $feeAmount);
     }
 }
