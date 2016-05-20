@@ -1,0 +1,4 @@
+app/code/Voronoy/*  app/code/Voronoy
+app/design/adminhtml/default/default/layout/voronoy_*.xml  app/design/adminhtml/default/default/layout
+app/design/frontend/base/default/layout/voronoy_*.xml  app/design/frontend/base/default/layout
+app/etc/modules/Voronoy_ExtraFee.xml app/etc/modules
