@@ -34,7 +34,8 @@ class Voronoy_ExtraFee_Model_SalesRule_Discount_Validator extends Mage_SalesRule
         if (!Mage::helper('voronoy_extrafee')->isRuleExtraFeeEnabled()) {
             return parent::_canProcessRule($rule, $address);
         }
-        if ($rule->getDiscountAmount() == 0) {
+        //modification to let free shipping rules be applied
+        if (!$rule->getSimpleFreeShipping() && !$rule->getApplyToShipping() && $rule->getDiscountAmount() == 0) {
             return false;
         }
         return parent::_canProcessRule($rule, $address);
